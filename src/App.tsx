@@ -19,5 +19,5 @@ wow function and FUNCTION
         });
     }, []);
 
-    return <div>{ans}</div>;
+    return <div className="p-40">{ans}</div>;
 };
