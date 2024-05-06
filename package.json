@@ -47,6 +47,7 @@
         "webpack-dev-server": "4.15.1"
     },
     "dependencies": {
+        "@radix-ui/react-dialog": "^1.0.5",
         "@radix-ui/react-slot": "^1.0.2",
         "altr-wasm": "file:altr-wasm/pkg",
         "class-variance-authority": "^0.7.0",
