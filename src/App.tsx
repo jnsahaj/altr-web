@@ -15,7 +15,6 @@ import {
 } from "./components/ui/dialog";
 import { PenLine as EditIcon } from "lucide-react";
 import { Separator } from "./components/ui/separator";
-import { Textarea } from "./components/ui/textarea";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./components/ui/resizable";
 
 export const App: React.FC = () => {
@@ -24,22 +23,30 @@ export const App: React.FC = () => {
     const [buf, setBuf] = useState("");
     const [ans, setAns] = useState("");
 
+    const [disabled, setDisabled] = useState(true);
+
     const handleBufChange = (bufInner: string) => {
         setBuf(() => bufInner);
     };
 
     useEffect(() => {
         init().then(() => {
-            setAns(execute(candidate, rename, buf));
+            setDisabled(false);
         });
-    }, [candidate, rename, buf]);
+    }, []);
+
+    useEffect(() => {
+        if (!disabled) {
+            setAns(execute(candidate, rename, buf));
+        }
+    }, [candidate, rename, buf, disabled]);
 
     return (
         <div className="p-12">
             <h1 className="text-7xl font-extrabold leading-9">altr</h1>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button variant="outline" className="mb-4 py-8 px-4">
+                    <Button disabled={disabled} variant="outline" className="mb-4 py-8 px-4">
                         <div className="flex gap-4 items-center lg:text-2xl text-lg">
                             <div className="text-base text-muted-foreground self-end">from</div>
                             <div>{candidate}</div>
@@ -54,17 +61,19 @@ export const App: React.FC = () => {
                     <div className="flex gap-8 h-[600px]">
                         <ResizablePanelGroup direction="horizontal">
                             <ResizablePanel className="pr-4">
-                                <Textarea
-                                    className="h-full"
+                                <div
+                                    contentEditable
+                                    className="h-full whitespace-pre overflow-auto"
                                     placeholder="Paste your text here..."
-                                    name="buf"
-                                    onChange={(ev) => handleBufChange(ev.target.value)}
+                                    onInput={(ev) =>
+                                        handleBufChange((ev.target as HTMLDivElement).textContent)
+                                    }
                                 />
                             </ResizablePanel>
                             <ResizableHandle withHandle />
                             <ResizablePanel className="pl-4">
-                                <div className="overflow-auto">
-                                    <code className="whitespace-pre-wrap text-sm">{ans}</code>
+                                <div className="max-h-full overflow-auto">
+                                    <code className="whitespace-pre text-sm">{ans}</code>
                                 </div>
                             </ResizablePanel>
                         </ResizablePanelGroup>
