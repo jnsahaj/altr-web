@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import init, { AltrError, BasicRecord, execute } from "altr-wasm";
+import React, { useCallback, useEffect, useState } from "react";
+import init, { AltrError, execute } from "altr-wasm";
 import "./index.css";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,8 @@ import {
 import { PenLine as EditIcon } from "lucide-react";
 import { Separator } from "./components/ui/separator";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./components/ui/resizable";
+import { AppTextarea } from "./components/app/app-textarea";
+import { TextViewer } from "./components/app/text-viewer";
 
 export const App: React.FC = () => {
     const [candidate, setCandidate] = useState("Dialog");
@@ -29,7 +31,7 @@ export const App: React.FC = () => {
     const [disabled, setDisabled] = useState(true);
 
     const handleBufChange = (bufInner: string) => {
-        setBuf(() => bufInner);
+        setBuf(bufInner);
     };
 
     useEffect(() => {
@@ -67,46 +69,6 @@ export const App: React.FC = () => {
         }
     }, [exec, disabled]);
 
-    const getHighlightedText = (b: string, recs: BasicRecord[]) => {
-        let highlightedText = "";
-        const parts = [];
-        let last = 0;
-
-        const entityMap = {
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;",
-            "/": "&#x2F;",
-            "`": "&#x60;",
-            "=": "&#x3D;"
-        };
-
-        function escapeHtml(string: string) {
-            return String(string).replace(/[&<>"'`=\/]/g, function (s) {
-                return entityMap[s];
-            });
-        }
-
-        recs.forEach((record) => {
-            const { pos, len } = record;
-
-            if (pos < 0 || pos >= b.length || len <= 0) {
-                return; // Skip invalid records
-            }
-
-            // Add part before the highlight
-            parts.push(`<span>${escapeHtml(b.slice(last, pos))}</span>`);
-            // Add the highlighted word
-            parts.push(`<span class="bg-yellow-300">${b.slice(pos, pos + len)}</span>`);
-            last = pos + len;
-        });
-
-        highlightedText = parts.join("");
-        return highlightedText;
-    };
-
     return (
         <div className="p-12">
             <h1 className="text-7xl font-extrabold leading-9">altr</h1>
@@ -127,37 +89,20 @@ export const App: React.FC = () => {
                     <div className="flex gap-8 h-[600px]">
                         <ResizablePanelGroup direction="horizontal">
                             <ResizablePanel className="pr-4">
-                                <div
-                                    contentEditable
-                                    className="h-full whitespace-pre overflow-auto"
-                                    placeholder="Paste your text here..."
-                                    onKeyDown={(ev) => {
-                                        if (ev.key === "Enter") {
-                                            window.document.execCommand(
-                                                "insertLineBreak",
-                                                false,
-                                                null
-                                            );
-                                            ev.preventDefault();
-                                        }
-                                    }}
-                                    onInput={(ev) => {
-                                        handleBufChange((ev.target as HTMLDivElement).textContent);
-                                    }}
-                                    dangerouslySetInnerHTML={{
-                                        __html: getHighlightedText(buf, records)
-                                    }}
+                                <AppTextarea
+                                    value={buf}
+                                    onSave={(value) => handleBufChange(value)}
+                                    records={records}
                                 />
                             </ResizablePanel>
                             <ResizableHandle withHandle />
                             <ResizablePanel className="pl-4">
-                                <div className="max-h-full overflow-auto">
-                                    <code
-                                        className="whitespace-pre text-sm"
-                                        dangerouslySetInnerHTML={{
-                                            __html: getHighlightedText(ans, processedRecords)
-                                        }}
-                                    ></code>
+                                <div className="h-full overflow-auto">
+                                    <TextViewer
+                                        text={ans}
+                                        records={processedRecords}
+                                        highlightClassName="bg-green-200"
+                                    />
                                 </div>
                             </ResizablePanel>
                         </ResizablePanelGroup>
