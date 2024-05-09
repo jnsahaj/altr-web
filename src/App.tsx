@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import init, { execute } from "altr-wasm";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import init, { AltrError, BasicRecord, execute } from "altr-wasm";
 import "./index.css";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,9 @@ export const App: React.FC = () => {
     const [rename, setRename] = useState("Modal");
     const [buf, setBuf] = useState("");
     const [ans, setAns] = useState("");
+    const [err, setErr] = useState<AltrError | null>(null);
+    const [records, setRecords] = useState([]);
+    const [processedRecords, setProcessedRecords] = useState([]);
 
     const [disabled, setDisabled] = useState(true);
 
@@ -35,11 +38,74 @@ export const App: React.FC = () => {
         });
     }, []);
 
+    const exec = useCallback(() => {
+        try {
+            const result = execute(candidate, rename, buf);
+            setErr(null);
+            return result;
+        } catch (e) {
+            const error = e as AltrError;
+            switch (error) {
+                case AltrError.CandidateCasing:
+                case AltrError.RenameCasing:
+                case AltrError.Generic:
+                    setErr(error);
+                    break;
+                default:
+                    setErr(AltrError.Generic);
+                    break;
+            }
+        }
+    }, [candidate, rename, buf]);
+
     useEffect(() => {
         if (!disabled) {
-            setAns(execute(candidate, rename, buf));
+            const result = exec();
+            setAns(result.processed_buf);
+            setRecords(result.records);
+            setProcessedRecords(result.processed_records);
         }
-    }, [candidate, rename, buf, disabled]);
+    }, [exec, disabled]);
+
+    const getHighlightedText = (b: string, recs: BasicRecord[]) => {
+        let highlightedText = "";
+        const parts = [];
+        let last = 0;
+
+        const entityMap = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;",
+            "/": "&#x2F;",
+            "`": "&#x60;",
+            "=": "&#x3D;"
+        };
+
+        function escapeHtml(string: string) {
+            return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+                return entityMap[s];
+            });
+        }
+
+        recs.forEach((record) => {
+            const { pos, len } = record;
+
+            if (pos < 0 || pos >= b.length || len <= 0) {
+                return; // Skip invalid records
+            }
+
+            // Add part before the highlight
+            parts.push(`<span>${escapeHtml(b.slice(last, pos))}</span>`);
+            // Add the highlighted word
+            parts.push(`<span class="bg-yellow-300">${b.slice(pos, pos + len)}</span>`);
+            last = pos + len;
+        });
+
+        highlightedText = parts.join("");
+        return highlightedText;
+    };
 
     return (
         <div className="p-12">
@@ -65,15 +131,33 @@ export const App: React.FC = () => {
                                     contentEditable
                                     className="h-full whitespace-pre overflow-auto"
                                     placeholder="Paste your text here..."
-                                    onInput={(ev) =>
-                                        handleBufChange((ev.target as HTMLDivElement).textContent)
-                                    }
+                                    onKeyDown={(ev) => {
+                                        if (ev.key === "Enter") {
+                                            window.document.execCommand(
+                                                "insertLineBreak",
+                                                false,
+                                                null
+                                            );
+                                            ev.preventDefault();
+                                        }
+                                    }}
+                                    onInput={(ev) => {
+                                        handleBufChange((ev.target as HTMLDivElement).textContent);
+                                    }}
+                                    dangerouslySetInnerHTML={{
+                                        __html: getHighlightedText(buf, records)
+                                    }}
                                 />
                             </ResizablePanel>
                             <ResizableHandle withHandle />
                             <ResizablePanel className="pl-4">
                                 <div className="max-h-full overflow-auto">
-                                    <code className="whitespace-pre text-sm">{ans}</code>
+                                    <code
+                                        className="whitespace-pre text-sm"
+                                        dangerouslySetInnerHTML={{
+                                            __html: getHighlightedText(ans, processedRecords)
+                                        }}
+                                    ></code>
                                 </div>
                             </ResizablePanel>
                         </ResizablePanelGroup>
@@ -94,6 +178,7 @@ export const App: React.FC = () => {
                                 value={candidate}
                                 onChange={(ev) => setCandidate(ev.target.value)}
                             />
+                            {err === AltrError.CandidateCasing && <>Invalid input</>}
                         </div>
                         <div className="items-center gap-4">
                             <Input
@@ -101,6 +186,7 @@ export const App: React.FC = () => {
                                 value={rename}
                                 onChange={(ev) => setRename(ev.target.value)}
                             />
+                            {err === AltrError.RenameCasing && <>Invalid input</>}
                         </div>
                     </div>
                     <DialogFooter>
