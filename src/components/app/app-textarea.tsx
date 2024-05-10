@@ -1,5 +1,5 @@
 import { BasicRecord } from "altr-wasm/pkg/altr_wasm";
-import { CheckIcon, PenBox } from "lucide-react";
+import { CheckIcon, PenLine } from "lucide-react";
 import React, { PropsWithChildren, useState } from "react";
 import { Textarea } from "../ui/textarea";
 import { ActionButton } from "./action-button";
@@ -23,7 +23,7 @@ export const AppTextarea: React.FC<AppTextareaProps> = ({ value, onSave, records
     const EditButton = () => {
         return (
             <ActionButton className="absolute right-2 top-2" onClick={() => setEdit(true)}>
-                <PenBox className="text-gray-800" />
+                <PenLine className="text-gray-800 h-3 w-3" />
             </ActionButton>
         );
     };
@@ -37,7 +37,7 @@ export const AppTextarea: React.FC<AppTextareaProps> = ({ value, onSave, records
                     onSave?.(inner);
                 }}
             >
-                <CheckIcon className="text-green-400" />
+                <CheckIcon className="text-green-400 h-3 w-3" />
             </ActionButton>
         );
     };
