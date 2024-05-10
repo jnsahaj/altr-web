@@ -31,7 +31,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
                 document.removeEventListener("keyup", shortcut);
             };
         }
-    }, [tooltip]);
+    }, [tooltip, props]);
 
     return (
         <TooltipProvider>
