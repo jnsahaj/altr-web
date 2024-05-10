@@ -9,6 +9,7 @@ import { ActionButton } from "./components/app/action-button";
 import { copyTextToClipboard } from "./lib/utils";
 import { CheckCheck, CopyIcon } from "lucide-react";
 import { programmer } from "../examples";
+import { useToast } from "./components/ui/use-toast";
 
 export const App: React.FC = () => {
     const [termsValue, setTermsValue] = useState<TermsValue>({
@@ -17,7 +18,6 @@ export const App: React.FC = () => {
     });
     const [buf, setBuf] = useState(programmer.text);
     const [ans, setAns] = useState("");
-    const [err, setErr] = useState<AltrError | null>(null);
     const [records, setRecords] = useState([]);
     const [processedRecords, setProcessedRecords] = useState([]);
 
@@ -39,32 +39,35 @@ export const App: React.FC = () => {
 
     const { candidate, rename } = termsValue;
 
+    const { toast } = useToast();
+
     const exec = useCallback(() => {
         try {
             const result = execute(candidate, rename, buf);
-            setErr(null);
             return result;
         } catch (e) {
             const error = e as AltrError;
             switch (error) {
-                case AltrError.CandidateCasing:
-                case AltrError.RenameCasing:
                 case AltrError.Generic:
-                    setErr(error);
-                    break;
                 default:
-                    setErr(AltrError.Generic);
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong",
+                        description: "An error occurred while processing the data"
+                    });
                     break;
             }
         }
-    }, [candidate, rename, buf]);
+    }, [candidate, rename, buf, toast]);
 
     useEffect(() => {
         if (!disabled) {
             const result = exec();
-            setAns(result.processed_buf);
-            setRecords(result.records);
-            setProcessedRecords(result.processed_records);
+            if (result) {
+                setAns(result.processed_buf);
+                setRecords(result.records);
+                setProcessedRecords(result.processed_records);
+            }
         }
     }, [exec, disabled]);
 
@@ -82,8 +85,8 @@ export const App: React.FC = () => {
                     }, 2000);
                 }}
             >
-                {!copied && <CopyIcon className="text-blue-500" />}
-                {copied && <CheckCheck className="text-green-400" />}
+                {!copied && <CopyIcon className="text-blue-500 h-3 w-3" />}
+                {copied && <CheckCheck className="text-green-400 h-3 w-3" />}
             </ActionButton>
         );
     };
@@ -94,7 +97,6 @@ export const App: React.FC = () => {
 
             <TermsInputDialog
                 value={termsValue}
-                error={err}
                 onSave={handleTermsValueSave}
                 disabled={disabled}
             />
