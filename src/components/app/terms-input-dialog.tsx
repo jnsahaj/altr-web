@@ -64,9 +64,16 @@ export const TermsInputDialog: React.FC<TermsInputDialogProps> = ({ value, onSav
 
     const { candidate, rename } = inner;
 
+    const handleOpenChange = (open: boolean) => {
+        if (!open && error !== null) {
+            setInner(value);
+            setError(null);
+        }
+    };
+
     return (
         <>
-            <Dialog>
+            <Dialog onOpenChange={handleOpenChange}>
                 <DialogTrigger asChild>
                     <Button disabled={disabled} variant="outline" className="mb-4 py-8 px-4">
                         <div className="flex gap-4 items-center lg:text-2xl text-lg">
