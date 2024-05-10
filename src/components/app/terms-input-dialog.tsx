@@ -1,4 +1,5 @@
-import { AltrError } from "altr-wasm";
+import { cn } from "@/lib/utils";
+import { validate, AltrError } from "altr-wasm";
 import { ArrowRightIcon, EditIcon } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "../ui/button";
@@ -25,27 +26,40 @@ export type TermsInputDialogProps = {
     onSave?: (value: TermsValue) => void;
     onChange?: (value: TermsValue) => void;
     disabled?: boolean;
-    error?: AltrError;
 };
 
-export const TermsInputDialog: React.FC<TermsInputDialogProps> = ({
-    value,
-    onSave,
-    disabled,
-    error
-}) => {
+export const TermsInputDialog: React.FC<TermsInputDialogProps> = ({ value, onSave, disabled }) => {
     const [inner, setInner] = useState<TermsValue>(value);
+    const [error, setError] = useState<AltrError | null>(null);
 
     const handleCandidateChange = (candidate: string) => {
+        try {
+            validate(candidate, inner.rename);
+            setError(null);
+        } catch (err) {
+            setError(err as AltrError | null);
+        }
+
         setInner((i) => ({ ...i, candidate }));
     };
 
     const handleRenameChange = (rename: string) => {
+        try {
+            validate(inner.candidate, rename);
+            setError(null);
+        } catch (err) {
+            setError(err as AltrError | null);
+        }
+
         setInner((i) => ({ ...i, rename }));
     };
 
     const handleSaveClick = () => {
         onSave?.(inner);
+    };
+
+    const InputError = () => {
+        return <div className="text-red-500 text-xs absolute mt-1">Invalid input</div>;
     };
 
     const { candidate, rename } = inner;
@@ -57,9 +71,9 @@ export const TermsInputDialog: React.FC<TermsInputDialogProps> = ({
                     <Button disabled={disabled} variant="outline" className="mb-4 py-8 px-4">
                         <div className="flex gap-4 items-center lg:text-2xl text-lg">
                             <div className="text-base text-muted-foreground self-end">from</div>
-                            <div>{candidate}</div>
+                            <div>{value.candidate}</div>
                             <div className="text-base text-muted-foreground self-end">to</div>
-                            <div>{rename}</div>
+                            <div>{value.rename}</div>
                             <Separator className="self-stretch h-auto" orientation="vertical" />
                             <EditIcon />
                         </div>
@@ -78,26 +92,36 @@ export const TermsInputDialog: React.FC<TermsInputDialogProps> = ({
                         <div className="items-center gap-4">
                             <Input
                                 name="candidate"
+                                className={cn({
+                                    "border-red-500": error === AltrError.CandidateCasing
+                                })}
                                 value={candidate}
                                 onChange={(ev) => handleCandidateChange(ev.target.value)}
                             />
-                            {error === AltrError.CandidateCasing && <>Invalid input</>}
+                            {error === AltrError.CandidateCasing && <InputError />}
                         </div>
                         <div>
                             <ArrowRightIcon />
                         </div>
-                        <div className="items-center gap-4">
+                        <div className="items-center gap-4 relative">
                             <Input
                                 name="rename"
+                                className={cn({
+                                    "border-red-500": error === AltrError.RenameCasing
+                                })}
                                 value={rename}
                                 onChange={(ev) => handleRenameChange(ev.target.value)}
                             />
-                            {error === AltrError.RenameCasing && <>Invalid input</>}
+                            {error === AltrError.RenameCasing && <InputError />}
                         </div>
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button type="submit" onClick={handleSaveClick}>
+                            <Button
+                                disabled={error !== null}
+                                type="submit"
+                                onClick={handleSaveClick}
+                            >
                                 Save changes
                             </Button>
                         </DialogClose>
