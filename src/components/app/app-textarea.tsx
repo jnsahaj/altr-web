@@ -1,8 +1,8 @@
 import { BasicRecord } from "altr-wasm/pkg/altr_wasm";
-import { CircleCheck, PenBox } from "lucide-react";
+import { CheckIcon, PenBox } from "lucide-react";
 import React, { PropsWithChildren, useState } from "react";
-import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
+import { ActionButton } from "./action-button";
 import { TextViewer } from "./text-viewer";
 
 export type AppTextareaProps = {
@@ -22,30 +22,23 @@ export const AppTextarea: React.FC<AppTextareaProps> = ({ value, onSave, records
 
     const EditButton = () => {
         return (
-            <Button
-                variant="secondary"
-                size="icon"
-                className="absolute right-2 top-2"
-                onClick={() => setEdit(true)}
-            >
+            <ActionButton className="absolute right-2 top-2" onClick={() => setEdit(true)}>
                 <PenBox className="text-gray-800" />
-            </Button>
+            </ActionButton>
         );
     };
 
     const DoneButton = () => {
         return (
-            <Button
-                variant="secondary"
-                size="icon"
+            <ActionButton
                 className="absolute right-2 top-2"
                 onClick={() => {
                     setEdit(false);
                     onSave?.(inner);
                 }}
             >
-                <CircleCheck className="text-sky-400" />
-            </Button>
+                <CheckIcon className="text-green-400" />
+            </ActionButton>
         );
     };
 
@@ -64,14 +57,8 @@ export const AppTextarea: React.FC<AppTextareaProps> = ({ value, onSave, records
             )}
             {!edit && (
                 <Container>
-                    <div className="h-full overflow-auto">
-                        <EditButton />
-                        <TextViewer
-                            text={value}
-                            records={records}
-                            highlightClassName="bg-red-200"
-                        />
-                    </div>
+                    <EditButton />
+                    <TextViewer text={value} records={records} highlightClassName="bg-red-200" />
                 </Container>
             )}
         </>

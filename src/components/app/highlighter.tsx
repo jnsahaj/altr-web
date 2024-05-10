@@ -1,5 +1,6 @@
 import React from "react";
 import { BasicRecord } from "altr-wasm/pkg/altr_wasm";
+import { cn } from "@/lib/utils";
 
 export type HighlightProps = {
     as?: keyof HTMLElementTagNameMap | React.FC;
@@ -42,7 +43,7 @@ export const Highlighter: React.FC<HighlightProps> = ({
         return result;
     }, [text, records, highlightClassName]);
 
-    return <Component className={className}>{parts}</Component>;
+    return <Component className={cn(className, "text-sm")}>{parts}</Component>;
 };
 
 export default Highlighter;

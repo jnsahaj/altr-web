@@ -5,6 +5,9 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./componen
 import { AppTextarea } from "./components/app/app-textarea";
 import { TextViewer } from "./components/app/text-viewer";
 import { TermsInputDialog, TermsValue } from "./components/app/terms-input-dialog";
+import { ActionButton } from "./components/app/action-button";
+import { copyTextToClipboard } from "./lib/utils";
+import { CheckCheck, CopyIcon } from "lucide-react";
 
 export const App: React.FC = () => {
     const [termsValue, setTermsValue] = useState<TermsValue>({
@@ -30,7 +33,6 @@ export const App: React.FC = () => {
     }, []);
 
     const handleTermsValueSave = (value: TermsValue) => {
-        console.log(value);
         setTermsValue(value);
     };
 
@@ -65,8 +67,28 @@ export const App: React.FC = () => {
         }
     }, [exec, disabled]);
 
+    const CopyAnswerButton = () => {
+        const [copied, setCopied] = useState(false);
+
+        return (
+            <ActionButton
+                className="absolute right-2 top-2"
+                onClick={async () => {
+                    await copyTextToClipboard(ans);
+                    setCopied(true);
+                    setTimeout(() => {
+                        setCopied(false);
+                    }, 2000);
+                }}
+            >
+                {!copied && <CopyIcon className="text-blue-500" />}
+                {copied && <CheckCheck className="text-green-400" />}
+            </ActionButton>
+        );
+    };
+
     return (
-        <div className="p-12">
+        <div className="p-12 bg-gray-100">
             <h1 className="text-7xl font-extrabold leading-9">altr</h1>
 
             <TermsInputDialog
@@ -79,7 +101,7 @@ export const App: React.FC = () => {
             <div className="mb-6">
                 <div className="flex gap-8 h-[600px]">
                     <ResizablePanelGroup direction="horizontal">
-                        <ResizablePanel className="pr-4">
+                        <ResizablePanel>
                             <AppTextarea
                                 value={buf}
                                 onSave={(value) => handleBufChange(value)}
@@ -87,8 +109,9 @@ export const App: React.FC = () => {
                             />
                         </ResizablePanel>
                         <ResizableHandle withHandle />
-                        <ResizablePanel className="pl-4">
-                            <div className="h-full overflow-auto">
+                        <ResizablePanel>
+                            <div className="relative h-full">
+                                <CopyAnswerButton />
                                 <TextViewer
                                     text={ans}
                                     records={processedRecords}
