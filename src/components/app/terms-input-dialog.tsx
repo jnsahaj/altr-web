@@ -82,10 +82,10 @@ export const TermsInputDialog: React.FC<TermsInputDialogProps> = ({ value, onSav
 
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle className="mx-auto">Modify Terms</DialogTitle>
+                        <DialogTitle className="mx-auto">Modify Query</DialogTitle>
                         <DialogDescription>
-                            Edit the terms you want to change between, while preserving casing. The
-                            terms losely follow general variable naming conventions
+                            Replace specific words in your text, while maintaining the intended
+                            casing
                         </DialogDescription>
                     </DialogHeader>
                     <div className="flex gap-4 py-4 items-center">

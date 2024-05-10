@@ -23,7 +23,7 @@ export const AppTextarea: React.FC<AppTextareaProps> = ({ value, onSave, records
     const EditButton = () => {
         return (
             <ActionButton className="absolute right-2 top-2" onClick={() => setEdit(true)}>
-                <PenLine className="text-gray-800 h-3 w-3" />
+                <PenLine className="text-gray-800 h-4 w-4" />
             </ActionButton>
         );
     };
@@ -37,7 +37,7 @@ export const AppTextarea: React.FC<AppTextareaProps> = ({ value, onSave, records
                     onSave?.(inner);
                 }}
             >
-                <CheckIcon className="text-green-400 h-3 w-3" />
+                <CheckIcon className="text-green-400 h-4 w-4" />
             </ActionButton>
         );
     };

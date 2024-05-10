@@ -85,14 +85,25 @@ export const App: React.FC = () => {
                     }, 2000);
                 }}
             >
-                {!copied && <CopyIcon className="text-blue-500 h-3 w-3" />}
-                {copied && <CheckCheck className="text-green-400 h-3 w-3" />}
+                {!copied && <CopyIcon className="text-blue-500 h-4 w-4" />}
+                {copied && <CheckCheck className="text-green-400 h-4 w-4" />}
             </ActionButton>
         );
     };
 
+    const TextareaPanel = () => (
+        <AppTextarea value={buf} onSave={(value) => handleBufChange(value)} records={records} />
+    );
+
+    const TextViewerPanel = () => (
+        <div className="relative h-full">
+            <CopyAnswerButton />
+            <TextViewer text={ans} records={processedRecords} highlightClassName="bg-green-200" />
+        </div>
+    );
+
     return (
-        <div className="p-12 bg-gray-100">
+        <div className="md:p-12 p-4">
             <h1 className="text-7xl font-extrabold leading-9">altr</h1>
 
             <TermsInputDialog
@@ -101,26 +112,29 @@ export const App: React.FC = () => {
                 disabled={disabled}
             />
 
-            <div className="mb-6">
+            <div className="mb-6 hidden md:block">
                 <div className="flex gap-8 h-[600px]">
                     <ResizablePanelGroup direction="horizontal">
                         <ResizablePanel>
-                            <AppTextarea
-                                value={buf}
-                                onSave={(value) => handleBufChange(value)}
-                                records={records}
-                            />
+                            <TextareaPanel />
                         </ResizablePanel>
                         <ResizableHandle withHandle />
                         <ResizablePanel>
-                            <div className="relative h-full">
-                                <CopyAnswerButton />
-                                <TextViewer
-                                    text={ans}
-                                    records={processedRecords}
-                                    highlightClassName="bg-green-200"
-                                />
-                            </div>
+                            <TextViewerPanel />
+                        </ResizablePanel>
+                    </ResizablePanelGroup>
+                </div>
+            </div>
+
+            <div className="mb-6 md:hidden">
+                <div className="flex gap-8 h-[600px]">
+                    <ResizablePanelGroup direction="vertical">
+                        <ResizablePanel>
+                            <TextareaPanel />
+                        </ResizablePanel>
+                        <ResizableHandle withHandle />
+                        <ResizablePanel>
+                            <TextViewerPanel />
                         </ResizablePanel>
                     </ResizablePanelGroup>
                 </div>

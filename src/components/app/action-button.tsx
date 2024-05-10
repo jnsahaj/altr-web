@@ -6,7 +6,7 @@ export type ActionButtonProps = Partial<ButtonProps>;
 
 export const ActionButton: React.FC<ActionButtonProps> = ({ className, children, ...props }) => {
     return (
-        <Button variant="outline" size="icon" className={cn(className)} {...props}>
+        <Button variant="ghost" size="icon" className={cn(className)} {...props}>
             {children}
         </Button>
     );
