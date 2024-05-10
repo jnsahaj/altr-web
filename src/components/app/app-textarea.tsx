@@ -17,7 +17,7 @@ const Container: React.FC<PropsWithChildren> = ({ children }) => {
 };
 
 export const AppTextarea: React.FC<AppTextareaProps> = ({ value, onSave, records }) => {
-    const [edit, setEdit] = useState(true);
+    const [edit, setEdit] = useState(false);
     const [inner, setInner] = useState(value);
 
     const EditButton = () => {

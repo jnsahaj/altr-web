@@ -8,13 +8,14 @@ import { TermsInputDialog, TermsValue } from "./components/app/terms-input-dialo
 import { ActionButton } from "./components/app/action-button";
 import { copyTextToClipboard } from "./lib/utils";
 import { CheckCheck, CopyIcon } from "lucide-react";
+import { programmer } from "../examples";
 
 export const App: React.FC = () => {
     const [termsValue, setTermsValue] = useState<TermsValue>({
-        candidate: "Dialog",
-        rename: "Modal"
+        candidate: programmer.candidate,
+        rename: programmer.rename
     });
-    const [buf, setBuf] = useState("");
+    const [buf, setBuf] = useState(programmer.text);
     const [ans, setAns] = useState("");
     const [err, setErr] = useState<AltrError | null>(null);
     const [records, setRecords] = useState([]);
