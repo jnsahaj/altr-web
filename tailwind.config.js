@@ -53,7 +53,8 @@ export const theme = {
             sm: "calc(var(--radius) - 4px)"
         },
         fontFamily: {
-            sans: ["var(--font-sans)", ...fontFamily.sans]
+            sans: ["var(--font-sans)", ...fontFamily.sans],
+            code: ["var(--font-code)"]
         },
         keyframes: {
             "accordion-down": {
@@ -68,6 +69,9 @@ export const theme = {
         animation: {
             "accordion-down": "accordion-down 0.2s ease-out",
             "accordion-up": "accordion-up 0.2s ease-out"
+        },
+        lineHeight: {
+            2: "0.5"
         }
     }
 };

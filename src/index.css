@@ -36,6 +36,7 @@
         --radius: 0.5rem;
 
         --font-sans: "Lato", sans-serif;
+        --font-code: "Fira Code", monospace;
     }
 
     .dark {
