@@ -2,7 +2,7 @@ import React from "react";
 import { BasicRecord } from "altr-wasm/pkg/altr_wasm";
 
 export type HighlightProps = {
-    as?: keyof HTMLElementTagNameMap | React.FC<any>;
+    as?: keyof HTMLElementTagNameMap | React.FC;
     text?: string;
     records?: BasicRecord[];
     highlightClassName?: string;
@@ -40,7 +40,7 @@ export const Highlighter: React.FC<HighlightProps> = ({
         }
 
         return result;
-    }, [text, records]);
+    }, [text, records, highlightClassName]);
 
     return <Component className={className}>{parts}</Component>;
 };

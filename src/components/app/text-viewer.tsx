@@ -5,14 +5,14 @@ import Highlighter from "./highlighter";
 export type TextViewerProps = {
     text?: string;
     records?: BasicRecord[];
-    formatAsCode?: boolean;
+    // formatAsCode?: boolean;
     highlightClassName?: string;
 };
 
 export const TextViewer: React.FC<TextViewerProps> = ({
     text,
     records,
-    formatAsCode,
+    // formatAsCode,
     highlightClassName
 }) => {
     return (

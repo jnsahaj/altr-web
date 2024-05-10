@@ -1,4 +1,5 @@
 import { BasicRecord } from "altr-wasm/pkg/altr_wasm";
+import { CircleCheck, PenBox } from "lucide-react";
 import React, { PropsWithChildren, useState } from "react";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
@@ -21,8 +22,13 @@ export const AppTextarea: React.FC<AppTextareaProps> = ({ value, onSave, records
 
     const EditButton = () => {
         return (
-            <Button className="absolute right-2 top-2" onClick={() => setEdit(true)}>
-                Edit
+            <Button
+                variant="secondary"
+                size="icon"
+                className="absolute right-2 top-2"
+                onClick={() => setEdit(true)}
+            >
+                <PenBox className="text-gray-800" />
             </Button>
         );
     };
@@ -30,13 +36,15 @@ export const AppTextarea: React.FC<AppTextareaProps> = ({ value, onSave, records
     const DoneButton = () => {
         return (
             <Button
+                variant="secondary"
+                size="icon"
                 className="absolute right-2 top-2"
                 onClick={() => {
                     setEdit(false);
                     onSave?.(inner);
                 }}
             >
-                Done
+                <CircleCheck className="text-sky-400" />
             </Button>
         );
     };
@@ -47,6 +55,7 @@ export const AppTextarea: React.FC<AppTextareaProps> = ({ value, onSave, records
                 <Container>
                     <DoneButton />
                     <Textarea
+                        placeholder="Start typing or paste your text here..."
                         className="h-full"
                         value={inner}
                         onChange={(ev) => setInner(ev.target.value)}
