@@ -18,6 +18,17 @@ pub fn execute(candidate: String, rename: String, buf: String) -> Result<AltrRes
 }
 
 #[wasm_bindgen]
+pub fn validate(candidate: String, rename: String) -> Result<(), AltrError> {
+    let _ = Task::build(&candidate, &rename, "").map_err(|e| match e {
+        altr::Error::CandidateCasing(_) => AltrError::CandidateCasing,
+        altr::Error::RenameCasing(_) => AltrError::RenameCasing,
+        _ => AltrError::Generic,
+    })?;
+
+    Ok(())
+}
+
+#[wasm_bindgen]
 pub enum AltrError {
     CandidateCasing,
     RenameCasing,
