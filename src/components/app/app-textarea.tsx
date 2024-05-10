@@ -22,20 +22,27 @@ export const AppTextarea: React.FC<AppTextareaProps> = ({ value, onSave, records
 
     const EditButton = () => {
         return (
-            <ActionButton className="absolute right-2 top-2" onClick={() => setEdit(true)}>
+            <ActionButton
+                tooltip={{ description: "Edit", key: "e", shortcut: "e" }}
+                className="absolute right-2 top-2"
+                onClick={() => setEdit(true)}
+            >
                 <PenLine className="text-gray-800 h-4 w-4" />
             </ActionButton>
         );
     };
 
+    const handleSave = () => {
+        setEdit(false);
+        onSave?.(inner);
+    };
+
     const DoneButton = () => {
         return (
             <ActionButton
+                tooltip={{ description: "Save", shortcut: "Esc" }}
                 className="absolute right-2 top-2"
-                onClick={() => {
-                    setEdit(false);
-                    onSave?.(inner);
-                }}
+                onClick={handleSave}
             >
                 <CheckIcon className="text-green-400 h-4 w-4" />
             </ActionButton>
@@ -50,7 +57,14 @@ export const AppTextarea: React.FC<AppTextareaProps> = ({ value, onSave, records
                     <Textarea
                         placeholder="Start typing or paste your text here..."
                         className="h-full"
+                        autoFocus
                         value={inner}
+                        onBlur={handleSave}
+                        onKeyUp={(ev) => {
+                            if (ev.key === "Escape") {
+                                handleSave();
+                            }
+                        }}
                         onChange={(ev) => setInner(ev.target.value)}
                     />
                 </Container>
