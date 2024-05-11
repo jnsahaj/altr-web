@@ -77,7 +77,7 @@ export const App: React.FC = () => {
 
         return (
             <ActionButton
-                tooltip={{ description: "Copy", key: "c", shortcut: "c" }}
+                tooltip={{ description: "Copy" }}
                 className="absolute right-2 top-2"
                 onClick={async () => {
                     await copyTextToClipboard(ans);

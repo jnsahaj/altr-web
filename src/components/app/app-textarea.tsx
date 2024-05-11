@@ -23,7 +23,7 @@ export const AppTextarea: React.FC<AppTextareaProps> = ({ value, onSave, records
     const EditButton = () => {
         return (
             <ActionButton
-                tooltip={{ description: "Edit", key: "e", shortcut: "e" }}
+                tooltip={{ description: "Edit" }}
                 className="absolute right-2 top-2"
                 onClick={() => setEdit(true)}
             >
