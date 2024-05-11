@@ -76,11 +76,11 @@ export const TermsInputDialog: React.FC<TermsInputDialogProps> = ({ value, onSav
             <Dialog onOpenChange={handleOpenChange}>
                 <DialogTrigger asChild>
                     <Button disabled={disabled} variant="outline" className="py-8 px-4">
-                        <div className="flex gap-4 items-center lg:text-2xl text-lg">
+                        <div className="flex gap-4 items-center lg:text-2xl text-lg max-w-full">
                             <div className="text-base text-muted-foreground self-end">from</div>
-                            <div>{value.candidate}</div>
+                            <div className="text-ellipsis overflow-hidden">{value.candidate}</div>
                             <div className="text-base text-muted-foreground self-end">to</div>
-                            <div>{value.rename}</div>
+                            <div className="text-ellipsis overflow-hidden">{value.rename}</div>
                             <Separator className="self-stretch h-auto" orientation="vertical" />
                             <EditIcon />
                         </div>
