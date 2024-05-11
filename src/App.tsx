@@ -7,9 +7,10 @@ import { TextViewer } from "./components/app/text-viewer";
 import { TermsInputDialog, TermsValue } from "./components/app/terms-input-dialog";
 import { ActionButton } from "./components/app/action-button";
 import { copyTextToClipboard } from "./lib/utils";
-import { CheckCheck, CopyIcon } from "lucide-react";
+import { CheckCheck, CopyIcon, Github } from "lucide-react";
 import { programmer } from "../examples";
 import { useToast } from "./components/ui/use-toast";
+import { Button } from "./components/ui/button";
 
 export const App: React.FC = () => {
     const [termsValue, setTermsValue] = useState<TermsValue>({
@@ -107,11 +108,21 @@ export const App: React.FC = () => {
         <div className="md:p-12 p-4">
             <h1 className="text-7xl font-extrabold leading-9">altr</h1>
 
-            <TermsInputDialog
-                value={termsValue}
-                onSave={handleTermsValueSave}
-                disabled={disabled}
-            />
+            <div className="md:mb-8 mb-4 flex justify-between md:flex-row flex-col">
+                <TermsInputDialog
+                    value={termsValue}
+                    onSave={handleTermsValueSave}
+                    disabled={disabled}
+                />
+                <div className="flex gap-1 items-center self-end mt-2 md:mt-0">
+                    <div className="text-sm text-muted-foreground">Powered by Rust</div>
+                    <Button size="icon" className="rounded-xl" variant="ghost" asChild>
+                        <a className="cursor-pointer" href="https://github.com/jnsahaj/altr-web">
+                            <Github size={16} />
+                        </a>
+                    </Button>
+                </div>
+            </div>
 
             <div className="mb-6 hidden md:block">
                 <div className="flex gap-8 h-[600px]">

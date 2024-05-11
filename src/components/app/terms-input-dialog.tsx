@@ -75,7 +75,7 @@ export const TermsInputDialog: React.FC<TermsInputDialogProps> = ({ value, onSav
         <>
             <Dialog onOpenChange={handleOpenChange}>
                 <DialogTrigger asChild>
-                    <Button disabled={disabled} variant="outline" className="mb-4 py-8 px-4">
+                    <Button disabled={disabled} variant="outline" className="py-8 px-4">
                         <div className="flex gap-4 items-center lg:text-2xl text-lg">
                             <div className="text-base text-muted-foreground self-end">from</div>
                             <div>{value.candidate}</div>
