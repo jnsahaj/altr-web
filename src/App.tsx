@@ -11,6 +11,7 @@ import { CheckCheck, CopyIcon, Github } from "lucide-react";
 import { programmer } from "../examples";
 import { useToast } from "./components/ui/use-toast";
 import { Button } from "./components/ui/button";
+import { Faqs } from "./components/app/faqs";
 
 export const App: React.FC = () => {
     const [termsValue, setTermsValue] = useState<TermsValue>({
@@ -124,7 +125,7 @@ export const App: React.FC = () => {
                 </div>
             </div>
 
-            <div className="mb-6 hidden md:block">
+            <div className="mb-12 hidden md:block">
                 <div className="flex gap-8 h-[600px]">
                     <ResizablePanelGroup direction="horizontal">
                         <ResizablePanel>
@@ -150,6 +151,10 @@ export const App: React.FC = () => {
                         </ResizablePanel>
                     </ResizablePanelGroup>
                 </div>
+            </div>
+
+            <div>
+                <Faqs />
             </div>
         </div>
     );
