@@ -1,6 +1,6 @@
 Altr is a smart refactoring tool that helps you effortlessly rename variables, functions, and other code elements while maintaining your preferred casing conventions
 <br />
-### [altr playground](https://altr-5oz.pages.dev)
+### [altr playground](https://altr.iamsahaj.xyz)
 ### 
 Altr is also available as a [CLI tool](https://github.com/jnsahaj/altr) and as a [Rust library crate](https://crates.io/crates/altr)
 <br />
